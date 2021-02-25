@@ -87,7 +87,6 @@ fun getLazyListState(screenData: ScreenData) = rememberLazyListState(
 
 fun Modifier.workspaceSize() = fillMaxSize().run {
     if ( layoutParams.screenType == XSMALL ) this else {
-        // для планшетов от 600.dp до 900.dp
         width(
             min(
                 layoutParams.cellSize * layoutParams.columnsAmount,
