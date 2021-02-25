@@ -114,7 +114,6 @@ fun MyApp() {
             model.closeScreen()
         }) { Icon(painterResource(R.drawable.ic_baseline_arrow_back_24px), contentDescription = stringResource(R.string.close_label)) }
     }
-    // ui
     Scaffold(
         backgroundColor = colorResource(R.color.background),
         topBar = {
