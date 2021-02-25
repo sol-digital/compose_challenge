@@ -21,25 +21,14 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.example.androiddevchallenge.ui.data.PuppiesScreen
-import com.example.androiddevchallenge.ui.data.PuppyDetailsScreen
 import com.example.androiddevchallenge.ui.data.UiModel
 import com.example.androiddevchallenge.ui.theme.MyTheme
-import com.example.androiddevchallenge.ui.theme.getNavBgColor
-import com.example.androiddevchallenge.ui.view.*
+import com.example.androiddevchallenge.ui.view.MyApp
+import com.example.androiddevchallenge.ui.view.getLayoutGridParams
+import com.example.androiddevchallenge.ui.view.layoutParams
 
 class MainActivity : AppCompatActivity() {
 
@@ -57,7 +46,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     var backToast: Toast? = null
 
     override fun onBackPressed() {
@@ -65,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         val isHome = model.isRootScreen
         var needShowToast = isHome
-        if ( backToast != null ) {
+        if (backToast != null) {
             // уже показывали
             backToast = null
             needShowToast = false
@@ -79,6 +67,4 @@ class MainActivity : AppCompatActivity() {
             else -> super.onBackPressed()
         }
     }
-
 }
-

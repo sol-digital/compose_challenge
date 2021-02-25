@@ -1,15 +1,49 @@
+/*
+ * Copyright 2021 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.example.androiddevchallenge.ui.view
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSize
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.*
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.Divider
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
@@ -22,11 +56,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.androiddevchallenge.R
-import com.example.androiddevchallenge.ui.data.*
+import com.example.androiddevchallenge.ui.data.LayoutGridParams
+import com.example.androiddevchallenge.ui.data.PuppiesScreen
+import com.example.androiddevchallenge.ui.data.PuppyDetailsScreen
+import com.example.androiddevchallenge.ui.data.PuppyItem
+import com.example.androiddevchallenge.ui.data.ScreenData
+import com.example.androiddevchallenge.ui.data.UiModel
+import com.example.androiddevchallenge.ui.data.puppiesData
 import com.example.androiddevchallenge.ui.theme.getNavBgColor
 import kotlin.math.max
 import kotlin.math.min
-
 
 const val XSMALL = "xsmall"
 const val SMALL = "small"
@@ -34,13 +73,11 @@ const val MEDIUM = "medium"
 const val LARGE = "large"
 const val XLARGE = "xlarge"
 
-
 val uiModel: UiModel
     @Composable
     get() = viewModel(UiModel::class.java)
 
 lateinit var layoutParams: LayoutGridParams
-
 
 /**
  * Material Design layout params.
@@ -58,9 +95,8 @@ fun getLayoutGridParams(dpWidth: Double): LayoutGridParams {
         dpWidth < 1900 -> LARGE
         else -> XLARGE
     }
-    return LayoutGridParams(size, columns, if ( dpWidth < 720 ) 16 else 24, dpWidth / columns)
+    return LayoutGridParams(size, columns, if (dpWidth < 720) 16 else 24, dpWidth / columns)
 }
-
 
 @Composable
 fun getVerticalScrollState(screenData: ScreenData) = rememberScrollState(
@@ -84,9 +120,8 @@ fun getLazyListState(screenData: ScreenData) = rememberLazyListState(
     screenData.lazyListState = it
 }
 
-
 fun Modifier.workspaceSize() = fillMaxSize().run {
-    if ( layoutParams.screenType == XSMALL ) this else {
+    if (layoutParams.screenType == XSMALL) this else {
         width(
             min(
                 layoutParams.cellSize * layoutParams.columnsAmount,
@@ -99,7 +134,7 @@ fun Modifier.workspaceSize() = fillMaxSize().run {
 fun Modifier.dialogSize() = width(
     min(
         0.9 * layoutParams.cellSize * layoutParams.columnsAmount,
-        if ( layoutParams.screenType == XSMALL ) 310.0 else 420.0
+        if (layoutParams.screenType == XSMALL) 310.0 else 420.0
     ).dp
 )
 
@@ -109,15 +144,17 @@ fun MyApp() {
     val screenState = model.currentScreen
     val isRoot = model.isRootScreen
     val backIcon = @Composable {
-        IconButton(onClick = {
-            model.closeScreen()
-        }) { Icon(painterResource(R.drawable.ic_baseline_arrow_back_24px), contentDescription = stringResource(R.string.close_label)) }
+        IconButton(
+            onClick = {
+                model.closeScreen()
+            }
+        ) { Icon(painterResource(R.drawable.ic_baseline_arrow_back_24px), contentDescription = stringResource(R.string.close_label)) }
     }
     Scaffold(
         backgroundColor = colorResource(R.color.background),
         topBar = {
             TopAppBar(
-                navigationIcon = if ( !isRoot ) backIcon else null,
+                navigationIcon = if (!isRoot) backIcon else null,
                 backgroundColor = getNavBgColor(),
                 title = {
                     Text(
@@ -136,7 +173,7 @@ fun MyApp() {
             modifier = Modifier
                 .workspaceSize()
                 .padding(innerPadding),
-            elevation = if ( layoutParams.screenType == XSMALL ) 0.dp else 1.dp
+            elevation = if (layoutParams.screenType == XSMALL) 0.dp else 1.dp
         ) {
             Crossfade(targetState = screenState) {
                 when (it) {
@@ -147,7 +184,6 @@ fun MyApp() {
         }
     }
 }
-
 
 @Composable
 fun DrawPuppies(screenData: ScreenData) {
@@ -161,13 +197,14 @@ fun DrawPuppies(screenData: ScreenData) {
     }
 }
 
-
 @Composable
 fun PuppyItem(item: PuppyItem) {
     val model = uiModel
-    Column(modifier = Modifier.fillMaxWidth().clickable {
-        model.addScreen(PuppyDetailsScreen(item))
-    }) {
+    Column(
+        modifier = Modifier.fillMaxWidth().clickable {
+            model.addScreen(PuppyDetailsScreen(item))
+        }
+    ) {
         Row(modifier = Modifier.padding(vertical = 16.dp)) {
             Image(
                 painterResource(item.imageId),
@@ -185,7 +222,6 @@ fun PuppyItem(item: PuppyItem) {
         Divider()
     }
 }
-
 
 @Composable
 fun DrawPuppyDetails(screenData: PuppyDetailsScreen) {

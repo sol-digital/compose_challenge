@@ -24,15 +24,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.colorResource
 import com.example.androiddevchallenge.R
 
-
 @Composable
-fun getNavBgColor() = if ( isSystemInDarkTheme() ) MaterialTheme.colors.primarySurface else colorResource(R.color.statusBar)
-
+fun getNavBgColor() = if (isSystemInDarkTheme()) MaterialTheme.colors.primarySurface else colorResource(R.color.statusBar)
 
 @Composable
 fun MyTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable() () -> Unit) {
     MaterialTheme(
-        colors = if ( darkTheme ) darkColors(
+        colors = if (darkTheme) darkColors(
             primary = colorResource(R.color.primary), primaryVariant = colorResource(R.color.primaryDark), onPrimary = colorResource(R.color.onPrimary),
             secondary = colorResource(R.color.secondary), onSecondary = colorResource(R.color.onSecondary)
         ) else lightColors(
