@@ -16,46 +16,69 @@
 package com.example.androiddevchallenge
 
 import android.os.Bundle
+import android.view.Gravity
+import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.example.androiddevchallenge.ui.data.PuppiesScreen
+import com.example.androiddevchallenge.ui.data.PuppyDetailsScreen
+import com.example.androiddevchallenge.ui.data.UiModel
 import com.example.androiddevchallenge.ui.theme.MyTheme
+import com.example.androiddevchallenge.ui.theme.getNavBgColor
+import com.example.androiddevchallenge.ui.view.*
 
 class MainActivity : AppCompatActivity() {
+
+    val model: UiModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyTheme {
-                MyApp()
+            BoxWithConstraints(Modifier.fillMaxSize()) {
+                layoutParams = getLayoutGridParams(maxWidth.value.toDouble())
+                MyTheme {
+                    MyApp()
+                }
             }
         }
     }
+
+
+    var backToast: Toast? = null
+
+    override fun onBackPressed() {
+        backToast?.cancel()
+
+        val isHome = model.isRootScreen
+        var needShowToast = isHome
+        if ( backToast != null ) {
+            // уже показывали
+            backToast = null
+            needShowToast = false
+        }
+        when {
+            !model.isRootScreen -> model.closeScreen()
+            needShowToast -> backToast = Toast.makeText(applicationContext, getString(R.string.toast_back_label), Toast.LENGTH_SHORT).apply {
+                setGravity(Gravity.CENTER, 0, 0)
+                show()
+            }
+            else -> super.onBackPressed()
+        }
+    }
+
 }
 
-// Start building your app here!
-@Composable
-fun MyApp() {
-    Surface(color = MaterialTheme.colors.background) {
-        Text(text = "Ready... Set... GO!")
-    }
-}
-
-@Preview("Light Theme", widthDp = 360, heightDp = 640)
-@Composable
-fun LightPreview() {
-    MyTheme {
-        MyApp()
-    }
-}
-
-@Preview("Dark Theme", widthDp = 360, heightDp = 640)
-@Composable
-fun DarkPreview() {
-    MyTheme(darkTheme = true) {
-        MyApp()
-    }
-}
