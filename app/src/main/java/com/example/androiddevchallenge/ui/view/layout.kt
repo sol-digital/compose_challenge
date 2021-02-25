@@ -193,7 +193,6 @@ fun PuppyItem(item: PuppyItem) {
 fun DrawPuppyDetails(screenData: PuppyDetailsScreen) {
     val puppy = screenData.data
     Box(modifier = Modifier.fillMaxSize()) {
-        // Картинка
         Image(
             painterResource(puppy.imageId),
             contentDescription = null,
